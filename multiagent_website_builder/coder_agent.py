@@ -1,12 +1,11 @@
 import os
-import google.generativeai as genai
+from groq import Groq
 
 class CoderAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.code_file = os.path.join(workspace, "output")
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         os.makedirs(self.code_file, exist_ok=True)
         
     def generate_code(self, requirement, feedback=None):
@@ -75,9 +74,13 @@ file content here
 
 Create a STUNNING, PROFESSIONAL project that rivals top portfolios. No explanations, only high-quality code."""
         
-        response = self.model.generate_content(prompt)
+        response = self.client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=8000
+        )
         
-        content = response.text.strip()
+        content = response.choices[0].message.content.strip()
         self._parse_and_save_files(content)
         
         return self.code_file

@@ -1,12 +1,11 @@
 import os
-import google.generativeai as genai
+from groq import Groq
 
 class TesterAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.test_file = os.path.join(workspace, "test_app.py")
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         
     def generate_tests(self, code_file):
         files = []
@@ -35,9 +34,13 @@ Create THOROUGH tests that verify:
 
 Output ONLY valid test code. No explanations."""
         
-        response = self.model.generate_content(prompt)
+        response = self.client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=3000
+        )
         
-        tests = response.text.strip()
+        tests = response.choices[0].message.content.strip()
         tests = tests.replace("```python", "").replace("```", "").strip()
         
         with open(self.test_file, 'w') as f:

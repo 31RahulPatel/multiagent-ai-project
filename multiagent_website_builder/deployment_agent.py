@@ -2,14 +2,13 @@ import os
 import subprocess
 import time
 import signal
-import google.generativeai as genai
+from groq import Groq
 
 class DeploymentAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.output_dir = os.path.join(workspace, "output")
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         self.process = None
         self.port = 5000
         
@@ -187,9 +186,13 @@ fixed code here
 
 Only include files that need changes. No explanations."""
         
-        response = self.model.generate_content(prompt)
+        response = self.client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=3000
+        )
         
-        content = response.text.strip()
+        content = response.choices[0].message.content.strip()
         self._apply_fixes(content)
         print("   ✅ Fixes applied")
     

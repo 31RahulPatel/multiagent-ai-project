@@ -1,6 +1,6 @@
-# Multi-Agent Website Builder with Google Gemini AI
+# Multi-Agent Website Builder with Groq AI
 
-A multi-agent autonomous system using **Google Gemini API** that collaboratively builds, tests, and deploys projects.
+A multi-agent autonomous system using **Groq API (Llama 3.1 70B)** that collaboratively builds, tests, and deploys projects.
 
 ## Agents
 
@@ -24,8 +24,8 @@ A multi-agent autonomous system using **Google Gemini API** that collaboratively
 # Install dependencies
 pip install -r requirements.txt
 
-# Set your Gemini API key
-export GEMINI_API_KEY="your_gemini_api_key_here"
+# Set your Groq API key
+export GROQ_API_KEY="your_groq_api_key_here"
 ```
 
 ## Usage

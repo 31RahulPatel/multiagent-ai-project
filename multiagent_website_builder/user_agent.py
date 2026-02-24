@@ -1,12 +1,11 @@
 import os
-import google.generativeai as genai
+from groq import Groq
 
 class UserAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.feedback_file = os.path.join(workspace, "user_feedback.txt")
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         
     def simulate_usage(self, code_file):
         files = []
@@ -59,9 +58,13 @@ PROJECT CODE:
 
 Respond with specific issues found, or "No critical issues found" if code is excellent."""
         
-        response = self.model.generate_content(prompt)
+        response = self.client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=2000
+        )
         
-        feedback = response.text.strip()
+        feedback = response.choices[0].message.content.strip()
         
         with open(self.feedback_file, 'w') as f:
             f.write(feedback)

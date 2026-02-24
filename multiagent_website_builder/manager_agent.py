@@ -1,12 +1,11 @@
 import os
-import google.generativeai as genai
+from groq import Groq
 
 class ManagerAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.decision_file = os.path.join(workspace, "manager_decision.txt")
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         
     def review(self, requirement, code_file, test_results, user_feedback):
         files = []
@@ -79,9 +78,13 @@ or
 "REJECTED: <specific reason>"
 """
         
-        response = self.model.generate_content(prompt)
+        response = self.client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=500
+        )
         
-        decision = response.text.strip()
+        decision = response.choices[0].message.content.strip()
         
         with open(self.decision_file, 'w') as f:
             f.write(decision)

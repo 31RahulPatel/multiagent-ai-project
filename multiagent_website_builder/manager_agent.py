@@ -8,15 +8,21 @@ class ManagerAgent:
         self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         
     def review(self, requirement, code_file, test_results, user_feedback):
-        with open(code_file, 'r') as f:
-            code = f.read()
+        files = []
+        for root, dirs, filenames in os.walk(code_file):
+            for filename in filenames:
+                filepath = os.path.join(root, filename)
+                with open(filepath, 'r') as f:
+                    files.append(f"{filename}:\n{f.read()}\n")
         
-        prompt = f"""You are a senior engineering manager. Review this code for production readiness.
+        all_code = "\n".join(files)[:2000]
+        
+        prompt = f"""You are a senior engineering manager. Review this project for production readiness.
 
 REQUIREMENT: {requirement}
 
-CODE:
-{code}
+PROJECT CODE:
+{all_code}
 
 TEST RESULTS:
 {test_results[:500]}
@@ -26,10 +32,12 @@ USER FEEDBACK:
 
 APPROVAL CRITERIA:
 - Code satisfies requirement
-- Tests are meaningful
+- Tests are meaningful (or not needed for static sites)
 - Feedback issues resolved
 - No security issues
 - No hardcoded secrets
+- Proper dependencies listed
+- Works for any tech stack (Python, Node.js, HTML/CSS, React, etc.)
 
 Respond with ONLY:
 "APPROVED"
@@ -40,7 +48,8 @@ or
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="llama-3.1-8b-instant",
-            temperature=0.1
+            temperature=0.1,
+            max_tokens=500
         )
         
         decision = response.choices[0].message.content.strip()

@@ -8,20 +8,31 @@ class TesterAgent:
         self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         
     def generate_tests(self, code_file):
-        with open(code_file, 'r') as f:
-            code = f.read()
+        files = []
+        for root, dirs, filenames in os.walk(code_file):
+            for filename in filenames:
+                filepath = os.path.join(root, filename)
+                with open(filepath, 'r') as f:
+                    files.append(f"{filename}:\n{f.read()}\n")
         
-        prompt = f"""Generate pytest tests for this code. Include edge cases.
+        all_code = "\n".join(files)
+        
+        prompt = f"""Generate appropriate tests for this project. Use the right testing framework for the language.
 
 CODE:
-{code}
+{all_code[:3000]}
 
-Output ONLY valid Python pytest code. No explanations."""
+For Python: use pytest
+For JavaScript: use Jest or Mocha
+For HTML/CSS: use basic validation tests
+
+Output ONLY valid test code. No explanations."""
         
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="llama-3.1-8b-instant",
-            temperature=0.3
+            temperature=0.3,
+            max_tokens=2000
         )
         
         tests = response.choices[0].message.content.strip()

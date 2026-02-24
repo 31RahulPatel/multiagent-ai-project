@@ -4,6 +4,7 @@ from coder_agent import CoderAgent
 from tester_agent import TesterAgent
 from user_agent import UserAgent
 from manager_agent import ManagerAgent
+from deployment_agent import DeploymentAgent
 
 class Orchestrator:
     def __init__(self, workspace):
@@ -13,6 +14,7 @@ class Orchestrator:
         self.tester = TesterAgent(workspace)
         self.user = UserAgent(workspace)
         self.manager = ManagerAgent(workspace)
+        self.deployer = DeploymentAgent(workspace)
         self.max_iterations = 5
         
     def run(self, requirement):
@@ -56,9 +58,15 @@ class Orchestrator:
             
             if "APPROVED" in decision:
                 print(f"\n✅ PROJECT APPROVED after {iteration} iteration(s)")
-                print(f"\n📁 Output files:")
-                print(f"   - {code_file}")
-                print(f"   - {test_file}")
+                print(f"\n📁 Output files in: {code_file}")
+                print("\nGenerated files:")
+                for root, dirs, files in os.walk(code_file):
+                    for file in files:
+                        print(f"   - {os.path.join(root, file)}")
+                
+                # Deploy and test
+                self.deployer.deploy_and_test(requirement)
+                
                 return True
             else:
                 print(f"\n❌ REJECTED - Starting next iteration...")

@@ -1,13 +1,22 @@
 # Multi-Agent Website Builder with Groq AI
 
-A multi-agent autonomous system using **Groq API (Llama-3.1-8b-instant)** that collaboratively builds websites through iterative improvements.
+A multi-agent autonomous system using **Groq API (Llama-3.1-8b-instant)** that collaboratively builds, tests, and deploys projects.
 
 ## Agents
 
-1. **Coder Agent** - Uses Groq AI to generate and improve Python/Flask code
-2. **Tester Agent** - Uses Groq AI to create pytest tests
-3. **User Simulation Agent** - Uses Groq AI to identify UX, validation, and security issues
-4. **Manager Agent** - Uses Groq AI to approve or reject based on production standards
+1. **Coder Agent** - Generates code in ANY language/framework
+2. **Tester Agent** - Creates appropriate tests
+3. **User Simulation Agent** - Identifies issues
+4. **Manager Agent** - Approves/rejects based on standards
+5. **Deployment Agent** - Runs locally, detects errors, auto-fixes them
+
+## Supported Tech Stacks
+
+- **Frontend**: HTML/CSS/JS, React, Vue, Angular
+- **Backend**: Python/Flask/Django, Node.js/Express, FastAPI
+- **Full-stack**: MERN, MEAN, Django+React
+- **Static Sites**: Pure HTML/CSS
+- **Any language/framework** the AI can generate!
 
 ## Setup
 
@@ -27,12 +36,13 @@ python3 orchestrator.py
 
 ## How It Works
 
-1. **Coder Agent** generates code using Groq AI based on requirement
-2. **Tester Agent** creates and runs tests using Groq AI
-3. **User Agent** simulates usage and provides feedback using Groq AI
-4. **Manager Agent** reviews and decides APPROVED/REJECTED using Groq AI
-5. If rejected, feedback is used to improve in next iteration
-6. Process repeats until approval (max 5 iterations)
+1. **Coder Agent** generates code in any language/framework
+2. **Tester Agent** creates and runs appropriate tests
+3. **User Agent** simulates usage and provides feedback
+4. **Manager Agent** reviews and decides APPROVED/REJECTED
+5. If rejected, feedback loops back for improvement
+6. **Deployment Agent** asks to run locally, detects errors, auto-fixes them
+7. Process repeats until approval (max 5 iterations)
 
 ## Customization
 

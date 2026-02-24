@@ -17,22 +17,28 @@ class TesterAgent:
         
         all_code = "\n".join(files)
         
-        prompt = f"""Generate appropriate tests for this project. Use the right testing framework for the language.
+        prompt = f"""Generate comprehensive, professional tests for this project.
 
 CODE:
 {all_code[:3000]}
 
-For Python: use pytest
-For JavaScript: use Jest or Mocha
-For HTML/CSS: use basic validation tests
+For Python: use pytest with fixtures and edge cases
+For JavaScript: use Jest with comprehensive test coverage
+For HTML/CSS: validate structure and responsiveness
+
+Create THOROUGH tests that verify:
+- Core functionality
+- Edge cases
+- Error handling
+- User interactions
 
 Output ONLY valid test code. No explanations."""
         
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-8b-instant",
-            temperature=0.3,
-            max_tokens=2000
+            model="llama-3.1-70b-versatile",
+            temperature=0.4,
+            max_tokens=3000
         )
         
         tests = response.choices[0].message.content.strip()

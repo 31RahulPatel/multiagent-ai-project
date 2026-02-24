@@ -17,11 +17,10 @@ class ManagerAgent:
         
         all_code = "\n".join(files)[:2000]
         
-        # Check if it's a static HTML/CSS project
         is_static = 'index.html' in all_code and '.py' not in all_code and 'package.json' not in all_code
         
         if is_static:
-            prompt = f"""Review this static HTML/CSS website for production.
+            prompt = f"""Review this static website as a senior design/engineering lead.
 
 REQUIREMENT: {requirement}
 
@@ -31,25 +30,29 @@ CODE:
 USER FEEDBACK:
 {user_feedback}
 
-For static sites, approve if:
-- HTML structure is valid
-- CSS is present
-- Meets basic requirement
-- No broken code
+APPROVE ONLY IF:
+- Design is modern, professional, visually appealing
+- Fully responsive (mobile, tablet, desktop)
+- Clean, semantic HTML5
+- Well-organized, modern CSS
+- Smooth animations/transitions
+- Excellent user experience
+- Accessible (ARIA, alt text)
+- All feedback issues resolved
 
-Ignore: API security, backend validation, database issues (not applicable to static sites)
+Be STRICT - this should be portfolio-quality work.
 
 Respond ONLY:
 "APPROVED"
 or
-"REJECTED: <reason>"
+"REJECTED: <specific reason>"
 """
         else:
-            prompt = f"""You are a senior engineering manager. Review this project for production readiness.
+            prompt = f"""You are a senior engineering manager reviewing for production.
 
 REQUIREMENT: {requirement}
 
-PROJECT CODE:
+CODE:
 {all_code}
 
 TEST RESULTS:
@@ -58,25 +61,27 @@ TEST RESULTS:
 USER FEEDBACK:
 {user_feedback}
 
-APPROVAL CRITERIA:
-- Code satisfies requirement
-- Tests are meaningful (or not needed for static sites)
-- Feedback issues resolved
-- No security issues
+APPROVE ONLY IF:
+- Production-ready, well-architected
+- All tests pass
+- Security best practices
 - No hardcoded secrets
-- Proper dependencies listed
-- Works for any tech stack (Python, Node.js, HTML/CSS, React, etc.)
+- Excellent error handling
+- Clean, maintainable code
+- All feedback resolved
 
-Respond with ONLY:
+Be STRICT - enterprise-grade quality required.
+
+Respond ONLY:
 "APPROVED"
 or
-"REJECTED: <specific technical reason>"
+"REJECTED: <specific reason>"
 """
         
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-8b-instant",
-            temperature=0.1,
+            model="llama-3.1-70b-versatile",
+            temperature=0.2,
             max_tokens=500
         )
         

@@ -12,14 +12,14 @@ class CoderAgent:
         main_file = os.path.join(self.code_file, "index.html")
         
         if feedback:
-            prompt = f"""Improve this project based on feedback.
+            prompt = f"""You are an expert full-stack developer. Improve this project based on feedback.
 
 REQUIREMENT: {requirement}
 
 FEEDBACK:
 {feedback}
 
-Generate complete files needed (any language/framework). Format:
+Generate complete, production-quality files. Format:
 
 ### FILENAME: filename.ext
 ```
@@ -28,13 +28,43 @@ file content here
 
 No explanations, only code."""
         else:
-            prompt = f"""Create a complete project for: {requirement}
+            prompt = f"""You are an expert full-stack developer creating a professional, production-ready project.
 
-Use the BEST technology stack for this requirement (HTML/CSS/JS, React, Python/Flask, Node.js, etc.).
+REQUIREMENT: {requirement}
+
+CREATE A HIGH-QUALITY PROJECT WITH:
+
+1. MODERN DESIGN:
+   - Clean, professional UI/UX
+   - Responsive design (mobile-first)
+   - Modern color scheme and typography
+   - Smooth animations and transitions
+   - Professional spacing and layout
+
+2. BEST PRACTICES:
+   - Semantic HTML5
+   - CSS Grid/Flexbox for layouts
+   - Clean, organized code structure
+   - Accessibility (ARIA labels, alt text)
+   - SEO-friendly markup
+
+3. FEATURES:
+   - Interactive elements
+   - Smooth scrolling
+   - Hover effects
+   - Professional navigation
+   - Contact forms (if applicable)
+
+4. CODE QUALITY:
+   - Well-commented code
+   - Modular CSS
+   - Optimized performance
+   - Cross-browser compatible
 
 Generate ALL necessary files including:
-- Source code files
-- Configuration files (package.json, requirements.txt, etc.)
+- HTML files (semantic, accessible)
+- CSS files (modern, responsive)
+- JavaScript files (if needed for interactivity)
 - README.md with setup instructions
 
 Format your response as:
@@ -44,13 +74,13 @@ Format your response as:
 file content here
 ```
 
-Make it production-ready, clean, and minimal. No explanations, only code."""
+Create a STUNNING, PROFESSIONAL project that rivals top portfolios. No explanations, only high-quality code."""
         
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-8b-instant",
-            temperature=0.3,
-            max_tokens=4000
+            model="llama-3.1-70b-versatile",
+            temperature=0.7,
+            max_tokens=8000
         )
         
         content = response.choices[0].message.content.strip()

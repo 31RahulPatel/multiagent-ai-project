@@ -21,40 +21,49 @@ class UserAgent:
         is_static = any('.html' in f for f in files) and not any('.py' in f or '.js' in f or 'package.json' in f for f in files)
         
         if is_static:
-            prompt = f"""You are reviewing a static HTML/CSS website. Be lenient - static sites don't need:
-- API validation
-- Backend security
-- Database handling
+            prompt = f"""You are reviewing a static HTML/CSS website. Check for:
 
-Only flag CRITICAL issues like:
-- Broken HTML structure
-- Missing essential CSS
-- Broken links
+1. DESIGN QUALITY:
+   - Is the design modern and professional?
+   - Is it responsive (mobile-friendly)?
+   - Are colors and typography well-chosen?
+   - Are there smooth transitions/animations?
+
+2. CODE QUALITY:
+   - Is HTML semantic and accessible?
+   - Is CSS well-organized?
+   - Are there any broken elements?
+
+3. USER EXPERIENCE:
+   - Is navigation intuitive?
+   - Are interactive elements working?
+   - Is content well-structured?
 
 CODE:
 {all_code[:3000]}
 
-Respond with "No critical issues found" if the HTML/CSS is functional, or list only CRITICAL issues."""
+Respond with "No critical issues found" if the website is high-quality and professional, or list specific improvements needed."""
         else:
-            prompt = f"""You are a user testing this project. Identify issues:
-- Missing validation
-- UX gaps  
-- Unclear error handling
-- Security weaknesses
-- Design issues
-- Missing dependencies
-- Configuration issues
+            prompt = f"""You are a senior developer reviewing this project for quality.
+
+Check for:
+- Code quality and organization
+- Security vulnerabilities
+- Missing features from requirement
+- UX/UI issues
+- Performance problems
+- Missing error handling
 
 PROJECT CODE:
 {all_code[:3000]}
 
-Respond with specific issues found, or "No critical issues found" if code is good."""
+Respond with specific issues found, or "No critical issues found" if code is excellent."""
         
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-8b-instant",
-            temperature=0.3,
-            max_tokens=1500
+            model="llama-3.1-70b-versatile",
+            temperature=0.4,
+            max_tokens=2000
         )
         
         feedback = response.choices[0].message.content.strip()

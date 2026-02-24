@@ -15,7 +15,7 @@ class Orchestrator:
         self.user = UserAgent(workspace)
         self.manager = ManagerAgent(workspace)
         self.deployer = DeploymentAgent(workspace)
-        self.max_iterations = 3
+        self.max_iterations = 5
         
     def run(self, requirement):
         self._update_state(requirement=requirement, iteration=0, status="running")

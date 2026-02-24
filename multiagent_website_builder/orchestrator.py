@@ -88,5 +88,20 @@ if __name__ == "__main__":
     workspace = os.path.dirname(os.path.abspath(__file__))
     orchestrator = Orchestrator(workspace)
     
-    requirement = "Build a simple Flask web application with a homepage and API endpoint"
+    print("\n" + "="*60)
+    print("🤖 MULTI-AGENT WEBSITE BUILDER")
+    print("="*60)
+    print("\nWhat would you like to build?")
+    print("Examples:")
+    print("  - Create a portfolio website with HTML and CSS")
+    print("  - Build a REST API with Python Flask")
+    print("  - Create a React todo app")
+    print("\nYour requirement: ")
+    requirement = input().strip()
+    
+    if not requirement:
+        requirement = "Build a simple Flask web application with a homepage and API endpoint"
+        print(f"\nUsing default: {requirement}")
+    
+    print(f"\n🚀 Starting multi-agent system...\n")
     orchestrator.run(requirement)

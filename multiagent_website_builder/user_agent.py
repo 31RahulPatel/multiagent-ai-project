@@ -59,7 +59,7 @@ PROJECT CODE:
 Respond with specific issues found, or "No critical issues found" if code is excellent."""
         
         response = self.client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=2000
         )

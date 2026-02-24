@@ -35,7 +35,7 @@ Create THOROUGH tests that verify:
 Output ONLY valid test code. No explanations."""
         
         response = self.client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=3000
         )

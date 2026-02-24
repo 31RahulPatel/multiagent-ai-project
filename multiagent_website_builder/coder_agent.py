@@ -75,7 +75,7 @@ file content here
 Create a STUNNING, PROFESSIONAL project that rivals top portfolios. No explanations, only high-quality code."""
         
         response = self.client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=8000
         )

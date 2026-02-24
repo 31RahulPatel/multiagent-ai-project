@@ -6,7 +6,7 @@ class ManagerAgent:
         self.workspace = workspace
         self.decision_file = os.path.join(workspace, "manager_decision.txt")
         genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model = genai.GenerativeModel('gemini-2.0-flash')
         
     def review(self, requirement, code_file, test_results, user_feedback):
         files = []

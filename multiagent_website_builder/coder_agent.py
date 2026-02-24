@@ -1,16 +1,14 @@
 import os
-from groq import Groq
+import anthropic
 
 class CoderAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.code_file = os.path.join(workspace, "output")
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         os.makedirs(self.code_file, exist_ok=True)
         
     def generate_code(self, requirement, feedback=None):
-        main_file = os.path.join(self.code_file, "index.html")
-        
         if feedback:
             prompt = f"""You are an expert full-stack developer. Improve this project based on feedback.
 
@@ -76,14 +74,13 @@ file content here
 
 Create a STUNNING, PROFESSIONAL project that rivals top portfolios. No explanations, only high-quality code."""
         
-        response = self.client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-70b-versatile",
-            temperature=0.7,
-            max_tokens=8000
+        message = self.client.messages.create(
+            model="claude-sonnet-3-5-20241022",
+            max_tokens=8000,
+            messages=[{"role": "user", "content": prompt}]
         )
         
-        content = response.choices[0].message.content.strip()
+        content = message.content[0].text.strip()
         self._parse_and_save_files(content)
         
         return self.code_file
@@ -94,7 +91,6 @@ Create a STUNNING, PROFESSIONAL project that rivals top portfolios. No explanati
         matches = re.findall(pattern, content)
         
         if not matches:
-            # Fallback: detect language and save appropriately
             if "<!DOCTYPE" in content or "<html" in content:
                 ext = "index.html"
             elif "def " in content or "import " in content:

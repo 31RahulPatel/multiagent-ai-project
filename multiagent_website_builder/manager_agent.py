@@ -17,7 +17,35 @@ class ManagerAgent:
         
         all_code = "\n".join(files)[:2000]
         
-        prompt = f"""You are a senior engineering manager. Review this project for production readiness.
+        # Check if it's a static HTML/CSS project
+        is_static = 'index.html' in all_code and '.py' not in all_code and 'package.json' not in all_code
+        
+        if is_static:
+            prompt = f"""Review this static HTML/CSS website for production.
+
+REQUIREMENT: {requirement}
+
+CODE:
+{all_code}
+
+USER FEEDBACK:
+{user_feedback}
+
+For static sites, approve if:
+- HTML structure is valid
+- CSS is present
+- Meets basic requirement
+- No broken code
+
+Ignore: API security, backend validation, database issues (not applicable to static sites)
+
+Respond ONLY:
+"APPROVED"
+or
+"REJECTED: <reason>"
+"""
+        else:
+            prompt = f"""You are a senior engineering manager. Review this project for production readiness.
 
 REQUIREMENT: {requirement}
 

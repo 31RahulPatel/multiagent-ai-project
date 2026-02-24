@@ -6,7 +6,7 @@ class UserAgent:
         self.workspace = workspace
         self.feedback_file = os.path.join(workspace, "user_feedback.txt")
         genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel('gemini-1.5-flash')
         
     def simulate_usage(self, code_file):
         files = []

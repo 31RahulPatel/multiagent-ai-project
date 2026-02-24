@@ -6,7 +6,7 @@ class CoderAgent:
         self.workspace = workspace
         self.code_file = os.path.join(workspace, "output")
         genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel('gemini-1.5-flash')
         os.makedirs(self.code_file, exist_ok=True)
         
     def generate_code(self, requirement, feedback=None):

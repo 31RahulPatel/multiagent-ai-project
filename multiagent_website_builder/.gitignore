@@ -1,0 +1,10 @@
+.env
+*.pyc
+__pycache__/
+app.py
+test_app.py
+state.json
+manager_decision.txt
+user_feedback.txt
+test_results.txt
+templates/

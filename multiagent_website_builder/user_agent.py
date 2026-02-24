@@ -1,11 +1,11 @@
 import os
-from groq import Groq
+import anthropic
 
 class UserAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.feedback_file = os.path.join(workspace, "user_feedback.txt")
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         
     def simulate_usage(self, code_file):
         files = []
@@ -17,7 +17,6 @@ class UserAgent:
         
         all_code = "\n".join(files)
         
-        # Check if it's a static HTML/CSS project
         is_static = any('.html' in f for f in files) and not any('.py' in f or '.js' in f or 'package.json' in f for f in files)
         
         if is_static:
@@ -59,14 +58,13 @@ PROJECT CODE:
 
 Respond with specific issues found, or "No critical issues found" if code is excellent."""
         
-        response = self.client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-70b-versatile",
-            temperature=0.4,
-            max_tokens=2000
+        message = self.client.messages.create(
+            model="claude-sonnet-3-5-20241022",
+            max_tokens=2000,
+            messages=[{"role": "user", "content": prompt}]
         )
         
-        feedback = response.choices[0].message.content.strip()
+        feedback = message.content[0].text.strip()
         
         with open(self.feedback_file, 'w') as f:
             f.write(feedback)

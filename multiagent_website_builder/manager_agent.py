@@ -1,11 +1,11 @@
 import os
-from groq import Groq
+import anthropic
 
 class ManagerAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.decision_file = os.path.join(workspace, "manager_decision.txt")
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         
     def review(self, requirement, code_file, test_results, user_feedback):
         files = []
@@ -78,14 +78,13 @@ or
 "REJECTED: <specific reason>"
 """
         
-        response = self.client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-70b-versatile",
-            temperature=0.2,
-            max_tokens=500
+        message = self.client.messages.create(
+            model="claude-sonnet-3-5-20241022",
+            max_tokens=500,
+            messages=[{"role": "user", "content": prompt}]
         )
         
-        decision = response.choices[0].message.content.strip()
+        decision = message.content[0].text.strip()
         
         with open(self.decision_file, 'w') as f:
             f.write(decision)

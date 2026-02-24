@@ -2,13 +2,13 @@ import os
 import subprocess
 import time
 import signal
-from groq import Groq
+import anthropic
 
 class DeploymentAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.output_dir = os.path.join(workspace, "output")
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         self.process = None
         self.port = 5000
         
@@ -186,14 +186,13 @@ fixed code here
 
 Only include files that need changes. No explanations."""
         
-        response = self.client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-8b-instant",
-            temperature=0.2,
-            max_tokens=3000
+        response = self.client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=3000,
+            messages=[{"role": "user", "content": prompt}]
         )
         
-        content = response.choices[0].message.content.strip()
+        content = response.content[0].text.strip()
         self._apply_fixes(content)
         print("   ✅ Fixes applied")
     

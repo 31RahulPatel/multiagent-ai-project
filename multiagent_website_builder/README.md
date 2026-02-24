@@ -1,6 +1,6 @@
-# Multi-Agent Website Builder with Groq AI
+# Multi-Agent Website Builder with Anthropic AI
 
-A multi-agent autonomous system using **Groq API (Llama-3.1-8b-instant)** that collaboratively builds, tests, and deploys projects.
+A multi-agent autonomous system using **Anthropic API (Claude)** that collaboratively builds, tests, and deploys projects.
 
 ## Agents
 
@@ -24,8 +24,8 @@ A multi-agent autonomous system using **Groq API (Llama-3.1-8b-instant)** that c
 # Install dependencies
 pip install -r requirements.txt
 
-# Set your Groq API key
-export GROQ_API_KEY="your_groq_api_key_here"
+# Set your Anthropic API key
+export ANTHROPIC_API_KEY="your_anthropic_api_key_here"
 ```
 
 ## Usage

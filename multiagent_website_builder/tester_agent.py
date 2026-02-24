@@ -1,11 +1,11 @@
 import os
-from groq import Groq
+import anthropic
 
 class TesterAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.test_file = os.path.join(workspace, "test_app.py")
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         
     def generate_tests(self, code_file):
         files = []
@@ -34,14 +34,13 @@ Create THOROUGH tests that verify:
 
 Output ONLY valid test code. No explanations."""
         
-        response = self.client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-70b-versatile",
-            temperature=0.4,
-            max_tokens=3000
+        message = self.client.messages.create(
+            model="claude-sonnet-3-5-20241022",
+            max_tokens=3000,
+            messages=[{"role": "user", "content": prompt}]
         )
         
-        tests = response.choices[0].message.content.strip()
+        tests = message.content[0].text.strip()
         tests = tests.replace("```python", "").replace("```", "").strip()
         
         with open(self.test_file, 'w') as f:

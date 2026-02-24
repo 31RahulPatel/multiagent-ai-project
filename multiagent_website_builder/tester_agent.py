@@ -1,11 +1,12 @@
 import os
-import anthropic
+import google.generativeai as genai
 
 class TesterAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.test_file = os.path.join(workspace, "test_app.py")
-        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+        self.model = genai.GenerativeModel('gemini-pro')
         
     def generate_tests(self, code_file):
         files = []
@@ -34,13 +35,9 @@ Create THOROUGH tests that verify:
 
 Output ONLY valid test code. No explanations."""
         
-        message = self.client.messages.create(
-            model="claude-sonnet-3-5-20241022",
-            max_tokens=3000,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response = self.model.generate_content(prompt)
         
-        tests = message.content[0].text.strip()
+        tests = response.text.strip()
         tests = tests.replace("```python", "").replace("```", "").strip()
         
         with open(self.test_file, 'w') as f:

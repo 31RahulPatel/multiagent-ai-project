@@ -2,13 +2,14 @@ import os
 import subprocess
 import time
 import signal
-import anthropic
+import google.generativeai as genai
 
 class DeploymentAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.output_dir = os.path.join(workspace, "output")
-        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+        self.model = genai.GenerativeModel('gemini-pro')
         self.process = None
         self.port = 5000
         
@@ -186,13 +187,9 @@ fixed code here
 
 Only include files that need changes. No explanations."""
         
-        response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=3000,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response = self.model.generate_content(prompt)
         
-        content = response.content[0].text.strip()
+        content = response.text.strip()
         self._apply_fixes(content)
         print("   ✅ Fixes applied")
     

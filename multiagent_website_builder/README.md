@@ -1,6 +1,6 @@
-# Multi-Agent Website Builder with Anthropic AI
+# Multi-Agent Website Builder with Google Gemini AI
 
-A multi-agent autonomous system using **Anthropic API (Claude)** that collaboratively builds, tests, and deploys projects.
+A multi-agent autonomous system using **Google Gemini API** that collaboratively builds, tests, and deploys projects.
 
 ## Agents
 
@@ -24,8 +24,8 @@ A multi-agent autonomous system using **Anthropic API (Claude)** that collaborat
 # Install dependencies
 pip install -r requirements.txt
 
-# Set your Anthropic API key
-export ANTHROPIC_API_KEY="your_anthropic_api_key_here"
+# Set your Gemini API key
+export GEMINI_API_KEY="your_gemini_api_key_here"
 ```
 
 ## Usage

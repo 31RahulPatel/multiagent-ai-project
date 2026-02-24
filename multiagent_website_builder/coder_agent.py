@@ -1,11 +1,12 @@
 import os
-import anthropic
+import google.generativeai as genai
 
 class CoderAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.code_file = os.path.join(workspace, "output")
-        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+        self.model = genai.GenerativeModel('gemini-pro')
         os.makedirs(self.code_file, exist_ok=True)
         
     def generate_code(self, requirement, feedback=None):
@@ -74,13 +75,9 @@ file content here
 
 Create a STUNNING, PROFESSIONAL project that rivals top portfolios. No explanations, only high-quality code."""
         
-        message = self.client.messages.create(
-            model="claude-sonnet-3-5-20241022",
-            max_tokens=8000,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response = self.model.generate_content(prompt)
         
-        content = message.content[0].text.strip()
+        content = response.text.strip()
         self._parse_and_save_files(content)
         
         return self.code_file

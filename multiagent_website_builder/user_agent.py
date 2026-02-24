@@ -1,11 +1,12 @@
 import os
-import anthropic
+import google.generativeai as genai
 
 class UserAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.feedback_file = os.path.join(workspace, "user_feedback.txt")
-        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+        self.model = genai.GenerativeModel('gemini-pro')
         
     def simulate_usage(self, code_file):
         files = []
@@ -58,13 +59,9 @@ PROJECT CODE:
 
 Respond with specific issues found, or "No critical issues found" if code is excellent."""
         
-        message = self.client.messages.create(
-            model="claude-sonnet-3-5-20241022",
-            max_tokens=2000,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response = self.model.generate_content(prompt)
         
-        feedback = message.content[0].text.strip()
+        feedback = response.text.strip()
         
         with open(self.feedback_file, 'w') as f:
             f.write(feedback)

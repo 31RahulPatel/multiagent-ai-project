@@ -1,11 +1,12 @@
 import os
-import anthropic
+import google.generativeai as genai
 
 class ManagerAgent:
     def __init__(self, workspace):
         self.workspace = workspace
         self.decision_file = os.path.join(workspace, "manager_decision.txt")
-        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+        self.model = genai.GenerativeModel('gemini-pro')
         
     def review(self, requirement, code_file, test_results, user_feedback):
         files = []
@@ -78,13 +79,9 @@ or
 "REJECTED: <specific reason>"
 """
         
-        message = self.client.messages.create(
-            model="claude-sonnet-3-5-20241022",
-            max_tokens=500,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response = self.model.generate_content(prompt)
         
-        decision = message.content[0].text.strip()
+        decision = response.text.strip()
         
         with open(self.decision_file, 'w') as f:
             f.write(decision)

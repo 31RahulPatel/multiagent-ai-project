@@ -65,19 +65,42 @@ class DeploymentAgent:
     def _detect_run_command(self):
         files = os.listdir(self.output_dir)
         
+        # Static HTML (prioritize this)
+        if 'index.html' in files:
+            # Check if it's truly static (no build tools needed)
+            has_package_json = 'package.json' in files
+            if has_package_json:
+                # Check if package.json has build scripts
+                try:
+                    import json
+                    with open(os.path.join(self.output_dir, 'package.json'), 'r') as f:
+                        pkg = json.load(f)
+                        # If no build script, treat as static
+                        if 'scripts' not in pkg or 'build' not in pkg.get('scripts', {}):
+                            return f"cd {self.output_dir} && python3 -m http.server {self.port}"
+                except:
+                    pass
+                # Has package.json with build - skip deployment
+                return None
+            else:
+                # Pure static HTML
+                return f"cd {self.output_dir} && python3 -m http.server {self.port}"
+        
         # Python Flask/Django
-        if 'app.py' in files:
+        elif 'app.py' in files:
             return f"cd {self.output_dir} && python3 app.py"
         elif 'manage.py' in files:
             return f"cd {self.output_dir} && python3 manage.py runserver {self.port}"
         
-        # Node.js
+        # Node.js (only if npm is available)
         elif 'package.json' in files:
-            return f"cd {self.output_dir} && npm install && npm start"
-        
-        # Static HTML
-        elif 'index.html' in files:
-            return f"cd {self.output_dir} && python3 -m http.server {self.port}"
+            # Check if npm exists
+            import shutil
+            if shutil.which('npm'):
+                return f"cd {self.output_dir} && npm install && npm start"
+            else:
+                print("   ⚠️  Node.js project detected but npm not installed. Skipping deployment.")
+                return None
         
         return None
     
